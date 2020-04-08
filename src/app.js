@@ -26,7 +26,30 @@ app.post("/repositories", (request, response) => {
 });
 
 app.put("/repositories/:id", (request, response) => {
-  // TODO
+  // Unstructure the request params to get the id
+  const { id } = request.params;
+  // Unstructure the request body to get the updated data
+  const { title, url, techs } = request.body;
+  // Find the index of the targeted repo by the id
+  const repositoryIndex = repositories.findIndex(repository => repository.id === id);
+  // Check if the repo exists
+  if (repositoryIndex < 0) {
+    // If not, return error
+    return response.status(400).json({ error:'Repository not found!' });
+  }
+  // Instanciate the updated repository obj
+  repository = {
+    id,
+    title,
+    url,
+    techs,
+    likes: repositories[repositoryIndex].likes, // Get the old # of likes
+  };
+
+  // Update the value on the array by the index
+  repositories[repositoryIndex] = repository;
+  // Return the updated obj
+  return response.json(repository);
 });
 
 app.delete("/repositories/:id", (req, res) => {
